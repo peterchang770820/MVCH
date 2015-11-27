@@ -15,6 +15,23 @@ namespace MVCH.Models
         {
             return this.All().FirstOrDefault(c => c.Id == id);
         }
+
+        public IQueryable<客戶資料> Search(string search, int? customerType)
+        {
+            var data = this.All();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                data = data.Where(c => c.客戶名稱.Contains(search));
+            }
+
+            if (customerType.HasValue)
+            {
+                data = data.Where(c => c.客戶分類 == customerType);
+            }
+
+            return data;
+        }
     }
 
 	public  interface I客戶資料Repository : IRepository<客戶資料>

@@ -26,17 +26,7 @@ namespace MVCH.Controllers
         // GET: Customer
         public ActionResult Index(string search,int? customerType)
         {
-            var data = this._CustomerRepo.All();
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                data = data.Where(c => c.客戶名稱.Contains(search));
-            }
-
-            if (customerType.HasValue)
-            {
-                data = data.Where(c => c.客戶分類 == customerType);
-            }
+            var data = this._CustomerRepo.Search(search,customerType);
 
             ViewBag.CustomerType = new SelectList(this._CustomerTypeRepo.All(), "Id", "分類名稱");
             return View(data);
