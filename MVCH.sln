@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCH", "MVCH\MVCH.csproj", "{053347C6-C1EF-4DA5-BCBD-4107DB49443B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCH.Tests", "MVCH.Tests\MVCH.Tests.csproj", "{8EEAE492-45A8-4877-8A83-F34F5E1CF858}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{053347C6-C1EF-4DA5-BCBD-4107DB49443B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{053347C6-C1EF-4DA5-BCBD-4107DB49443B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{053347C6-C1EF-4DA5-BCBD-4107DB49443B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{053347C6-C1EF-4DA5-BCBD-4107DB49443B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EEAE492-45A8-4877-8A83-F34F5E1CF858}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EEAE492-45A8-4877-8A83-F34F5E1CF858}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EEAE492-45A8-4877-8A83-F34F5E1CF858}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EEAE492-45A8-4877-8A83-F34F5E1CF858}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
