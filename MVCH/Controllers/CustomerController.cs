@@ -122,6 +122,11 @@ namespace MVCH.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult CountInfo()
+        {
+            return View(db.VW_客戶聯絡人跟銀行資訊統計);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
