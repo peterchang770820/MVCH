@@ -12,12 +12,19 @@ namespace MVCH.Controllers
 {
     public class CustomerController : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        private readonly 客戶資料Repository _CustomerRepo;
+        private readonly VW_客戶聯絡人跟銀行資訊統計Repository _CountInfoRepo;
+
+        public CustomerController()
+        {
+            this._CustomerRepo = RepositoryHelper.Get客戶資料Repository();
+            this._CountInfoRepo = RepositoryHelper.GetVW_客戶聯絡人跟銀行資訊統計Repository();
+        }
 
         // GET: Customer
         public ActionResult Index(string search)
         {
-            var data = db.客戶資料.Where(c => !c.已刪除);
+            var data = this._CustomerRepo.All();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -34,7 +41,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶資料 客戶資料 = this._CustomerRepo.Find(id);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -57,8 +64,9 @@ namespace MVCH.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶資料.Add(客戶資料);
-                db.SaveChanges();
+                this._CustomerRepo.Add(客戶資料);
+                this._CustomerRepo.UnitOfWork.Commit();
+
                 return RedirectToAction("Index");
             }
 
@@ -72,7 +80,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶資料 客戶資料 = this._CustomerRepo.Find(id);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -89,8 +97,9 @@ namespace MVCH.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(客戶資料).State = EntityState.Modified;
-                db.SaveChanges();
+                ((客戶資料Entities)this._CustomerRepo.UnitOfWork.Context).Entry(客戶資料).State = EntityState.Modified;
+                this._CustomerRepo.UnitOfWork.Commit();
+
                 return RedirectToAction("Index");
             }
             return View(客戶資料);
@@ -103,7 +112,8 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
+
+            客戶資料 客戶資料 = this._CustomerRepo.Find(id);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -116,22 +126,24 @@ namespace MVCH.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶資料 客戶資料 = this._CustomerRepo.Find(id);
             客戶資料.已刪除 = true;
-            db.SaveChanges();
+
+            this._CustomerRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
         public ActionResult CountInfo()
         {
-            return View(db.VW_客戶聯絡人跟銀行資訊統計.Where(c => !c.已刪除));
+            return View(this._CountInfoRepo.All());
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                this._CustomerRepo.UnitOfWork.Context.Dispose();
+                this._CountInfoRepo.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }

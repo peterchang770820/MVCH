@@ -12,12 +12,18 @@ namespace MVCH.Controllers
 {
     public class BankController : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        private readonly 客戶銀行資訊Repository _BankInfoRepo;
+        private readonly 客戶資料Repository _CustomerInfoRepo;
 
+        public BankController()
+        {
+            this._BankInfoRepo = RepositoryHelper.Get客戶銀行資訊Repository();
+            this._CustomerInfoRepo = RepositoryHelper.Get客戶資料Repository();
+        }
         // GET: Bank
         public ActionResult Index(string search)
         {
-            var data = db.客戶銀行資訊.Where(b => !b.已刪除);
+            var data = this._BankInfoRepo.All();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -36,7 +42,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
+            客戶銀行資訊 客戶銀行資訊 = this._BankInfoRepo.Find(id);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -47,7 +53,7 @@ namespace MVCH.Controllers
         // GET: Bank/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(c => !c.已刪除), "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -60,12 +66,13 @@ namespace MVCH.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶銀行資訊.Add(客戶銀行資訊);
-                db.SaveChanges();
+                this._BankInfoRepo.Add(客戶銀行資訊);
+                this._BankInfoRepo.UnitOfWork.Commit();
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -76,12 +83,12 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
+            客戶銀行資訊 客戶銀行資訊 = this._BankInfoRepo.Find(id);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -94,11 +101,11 @@ namespace MVCH.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(客戶銀行資訊).State = EntityState.Modified;
-                db.SaveChanges();
+                ((客戶資料Entities)this._BankInfoRepo.UnitOfWork.Context).Entry(客戶銀行資訊).State = EntityState.Modified;
+                this._BankInfoRepo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -109,7 +116,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
+            客戶銀行資訊 客戶銀行資訊 = this._BankInfoRepo.Find(id);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -122,9 +129,9 @@ namespace MVCH.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
+            客戶銀行資訊 客戶銀行資訊 = this._BankInfoRepo.Find(id);
             客戶銀行資訊.已刪除 = true;
-            db.SaveChanges();
+            this._BankInfoRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
@@ -132,7 +139,8 @@ namespace MVCH.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                this._BankInfoRepo.UnitOfWork.Context.Dispose();
+                this._CustomerInfoRepo.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }

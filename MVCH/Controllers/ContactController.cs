@@ -12,12 +12,19 @@ namespace MVCH.Controllers
 {
     public class ContactController : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        private readonly 客戶聯絡人Repository _ContactRepo;
+        private readonly 客戶資料Repository _CustomerInfoRepo;
+
+        public ContactController()
+        {
+            this._ContactRepo = RepositoryHelper.Get客戶聯絡人Repository();
+            this._CustomerInfoRepo = RepositoryHelper.Get客戶資料Repository();
+        }
 
         // GET: Contact
         public ActionResult Index(string search)
         {
-            var data = db.客戶聯絡人.Where(c => !c.已刪除);
+            var data = this._ContactRepo.All();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -35,7 +42,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶聯絡人 客戶聯絡人 = this._ContactRepo.Find(id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -46,7 +53,7 @@ namespace MVCH.Controllers
         // GET: Contact/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(c => !c.已刪除), "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -59,12 +66,12 @@ namespace MVCH.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶聯絡人.Add(客戶聯絡人);
-                db.SaveChanges();
+                this._ContactRepo.Add(客戶聯絡人);
+                this._ContactRepo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -75,12 +82,12 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶聯絡人 客戶聯絡人 = this._ContactRepo.Find(id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -93,11 +100,11 @@ namespace MVCH.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(客戶聯絡人).State = EntityState.Modified;
-                db.SaveChanges();
+                ((客戶資料Entities)this._ContactRepo.UnitOfWork.Context).Entry(客戶聯絡人).State = EntityState.Modified;
+                this._ContactRepo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(this._CustomerInfoRepo.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -108,7 +115,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶聯絡人 客戶聯絡人 = this._ContactRepo.Find(id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -121,9 +128,9 @@ namespace MVCH.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶聯絡人 客戶聯絡人 = this._ContactRepo.Find(id);
             客戶聯絡人.已刪除 = true;
-            db.SaveChanges();
+            this._ContactRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
@@ -131,7 +138,8 @@ namespace MVCH.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                this._ContactRepo.UnitOfWork.Context.Dispose();
+                this._CustomerInfoRepo.UnitOfWork.Context.Dispose();
             }
             base.Dispose(disposing);
         }
