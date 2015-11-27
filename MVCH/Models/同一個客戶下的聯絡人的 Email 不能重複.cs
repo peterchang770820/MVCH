@@ -21,7 +21,7 @@ namespace MVCH.Models
                     if (customer == null)
                         return new ValidationResult("該客戶不存在!");
 
-                    if (customer.客戶聯絡人.Any(c => c.Email == value.ToString().Trim()))
+                    if (customer.客戶聯絡人.Any(c => c.Email == value.ToString().Trim() && c.Id != contact.Id))
                     {
                         return new ValidationResult(string.Format("{0}下已存在 Email 為 {1} 的聯絡人，請另外使用別的 Email！", customer.客戶名稱, value));
                     }
