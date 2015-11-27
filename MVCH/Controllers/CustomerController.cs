@@ -14,11 +14,13 @@ namespace MVCH.Controllers
     {
         private readonly 客戶資料Repository _CustomerRepo;
         private readonly VW_客戶聯絡人跟銀行資訊統計Repository _CountInfoRepo;
+        private readonly 客戶分類Repository _CustomerTypeRepo;
 
         public CustomerController()
         {
             this._CustomerRepo = RepositoryHelper.Get客戶資料Repository();
             this._CountInfoRepo = RepositoryHelper.GetVW_客戶聯絡人跟銀行資訊統計Repository();
+            this._CustomerTypeRepo = RepositoryHelper.Get客戶分類Repository();
         }
 
         // GET: Customer
@@ -52,6 +54,7 @@ namespace MVCH.Controllers
         // GET: Customer/Create
         public ActionResult Create()
         {
+            ViewBag.客戶分類 = new SelectList(this._CustomerTypeRepo.All(), "Id", "分類名稱");
             return View();
         }
 
@@ -60,7 +63,7 @@ namespace MVCH.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
@@ -70,6 +73,7 @@ namespace MVCH.Controllers
                 return RedirectToAction("Index");
             }
 
+            ViewBag.客戶分類 = new SelectList(this._CustomerTypeRepo.All(), "Id", "分類名稱", 客戶資料.客戶分類);
             return View(客戶資料);
         }
 
@@ -85,6 +89,7 @@ namespace MVCH.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.客戶分類 = new SelectList(this._CustomerTypeRepo.All(), "Id", "分類名稱",客戶資料.客戶分類);
             return View(客戶資料);
         }
 
@@ -93,7 +98,7 @@ namespace MVCH.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
@@ -102,6 +107,8 @@ namespace MVCH.Controllers
 
                 return RedirectToAction("Index");
             }
+
+            ViewBag.客戶分類 = new SelectList(this._CustomerTypeRepo.All(), "Id", "分類名稱", 客戶資料.客戶分類);
             return View(客戶資料);
         }
 

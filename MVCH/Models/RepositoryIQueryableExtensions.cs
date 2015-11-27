@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace MVCH.Models
 {
-	public static class RepositoryIQueryableExtensions
+    public static class RepositoryIQueryableExtensions
 	{
 		public static IQueryable<T> Include<T>
 			(this IQueryable<T> source, string path)

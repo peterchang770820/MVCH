@@ -36,8 +36,12 @@ namespace MVCH.Models
         [DataType(DataType.EmailAddress)]
         [Required]
         public string Email { get; set; }
+
+        [Required]
+        public int 客戶分類 { get; set; }
     
         public virtual ICollection<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }
+        public virtual 客戶分類 客戶分類1 { get; set; }
     }
 }

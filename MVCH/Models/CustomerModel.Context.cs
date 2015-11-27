@@ -29,5 +29,6 @@ namespace MVCH.Models
         public virtual DbSet<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual DbSet<客戶聯絡人> 客戶聯絡人 { get; set; }
         public virtual DbSet<VW_客戶聯絡人跟銀行資訊統計> VW_客戶聯絡人跟銀行資訊統計 { get; set; }
+        public virtual DbSet<客戶分類> 客戶分類 { get; set; }
     }
 }
