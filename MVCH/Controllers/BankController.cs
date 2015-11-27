@@ -15,10 +15,18 @@ namespace MVCH.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: Bank
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
-            return View(客戶銀行資訊.ToList());
+            var data = db.客戶銀行資訊.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                data = data.Where(b => b.銀行名稱.Contains(search));
+            }
+
+            data = data.Include(b => b.客戶資料);
+
+            return View(data);
         }
 
         // GET: Bank/Details/5

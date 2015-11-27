@@ -15,10 +15,17 @@ namespace MVCH.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: Contact
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
-            var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-            return View(客戶聯絡人.ToList());
+            var data = db.客戶聯絡人.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                data = data.Where(c => c.姓名.Contains(search));
+            }
+            data = data.Include(客 => 客.客戶資料);
+
+            return View(data);
         }
 
         // GET: Contact/Details/5

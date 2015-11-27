@@ -9,6 +9,16 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+<p>
+    @using (Html.BeginForm())
+    {
+        @:客戶名稱：
+        @Html.TextBox("search",null,new { placeholder = "Search" })
+        <button type="submit" class="btn btn-info">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
+    }
+</p>
 <table class="table">
     <tr>
         <th>
