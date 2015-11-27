@@ -27,6 +27,7 @@ namespace MVCH.Models
         [StringLength(250, ErrorMessage="欄位長度不得大於 250 個字元")]
         [Required]
         [DataType(DataType.EmailAddress)]
+        [同一個客戶下的聯絡人的_Email_不能重複]
         public string Email { get; set; }
         
         [StringLength(50, ErrorMessage="欄位長度不得大於 50 個字元")]

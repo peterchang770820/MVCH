@@ -163,6 +163,7 @@
     <Compile Include="Models\VW_客戶聯絡人跟銀行資訊統計.Partial.cs">
       <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\同一個客戶下的聯絡人的 Email 不能重複.cs" />
     <Compile Include="Models\客戶聯絡人.cs">
       <DependentUpon>CustomerModel.tt</DependentUpon>
     </Compile>
