@@ -18,5 +18,6 @@ namespace MVCH.Models
         public string 客戶名稱 { get; set; }
         public Nullable<int> 聯絡人數量 { get; set; }
         public Nullable<int> 銀行資訊數量 { get; set; }
+        public bool 已刪除 { get; set; }
     }
 }

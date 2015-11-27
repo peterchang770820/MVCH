@@ -17,7 +17,7 @@ namespace MVCH.Controllers
         // GET: Contact
         public ActionResult Index(string search)
         {
-            var data = db.客戶聯絡人.AsQueryable();
+            var data = db.客戶聯絡人.Where(c => !c.已刪除);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -35,7 +35,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -46,7 +46,7 @@ namespace MVCH.Controllers
         // GET: Contact/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(c => !c.已刪除), "Id", "客戶名稱");
             return View();
         }
 
@@ -75,7 +75,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -108,7 +108,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -121,8 +121,8 @@ namespace MVCH.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            db.客戶聯絡人.Remove(客戶聯絡人);
+            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶聯絡人.已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

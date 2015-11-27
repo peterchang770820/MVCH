@@ -17,7 +17,7 @@ namespace MVCH.Controllers
         // GET: Customer
         public ActionResult Index(string search)
         {
-            var data = db.客戶資料.AsQueryable();
+            var data = db.客戶資料.Where(c => !c.已刪除);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -34,7 +34,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -72,7 +72,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -103,7 +103,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -116,15 +116,15 @@ namespace MVCH.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
-            db.客戶資料.Remove(客戶資料);
+            客戶資料 客戶資料 = db.客戶資料.FirstOrDefault(c => c.Id == id && !c.已刪除);
+            客戶資料.已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
         public ActionResult CountInfo()
         {
-            return View(db.VW_客戶聯絡人跟銀行資訊統計);
+            return View(db.VW_客戶聯絡人跟銀行資訊統計.Where(c => !c.已刪除));
         }
 
         protected override void Dispose(bool disposing)

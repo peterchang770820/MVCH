@@ -17,7 +17,7 @@ namespace MVCH.Controllers
         // GET: Bank
         public ActionResult Index(string search)
         {
-            var data = db.客戶銀行資訊.AsQueryable();
+            var data = db.客戶銀行資訊.Where(b => !b.已刪除);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -36,7 +36,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -47,7 +47,7 @@ namespace MVCH.Controllers
         // GET: Bank/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(c => !c.已刪除), "Id", "客戶名稱");
             return View();
         }
 
@@ -76,7 +76,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace MVCH.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -122,8 +122,8 @@ namespace MVCH.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            db.客戶銀行資訊.Remove(客戶銀行資訊);
+            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.FirstOrDefault(b => b.Id == id && !b.已刪除);
+            客戶銀行資訊.已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
