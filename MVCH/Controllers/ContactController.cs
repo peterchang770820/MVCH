@@ -24,13 +24,10 @@ namespace MVCH.Controllers
         // GET: Contact
         public ActionResult Index(string search)
         {
-            var data = this._ContactRepo.All();
+            var data = this._ContactRepo.Search(search);
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                data = data.Where(c => c.姓名.Contains(search));
-            }
-            data = data.Include(客 => 客.客戶資料);
+            
+
 
             return View(data);
         }

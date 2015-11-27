@@ -23,14 +23,9 @@ namespace MVCH.Controllers
         // GET: Bank
         public ActionResult Index(string search)
         {
-            var data = this._BankInfoRepo.All();
+            var data = this._BankInfoRepo.Search(search);
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                data = data.Where(b => b.銀行名稱.Contains(search));
-            }
-
-            data = data.Include(b => b.客戶資料);
+            
 
             return View(data);
         }
