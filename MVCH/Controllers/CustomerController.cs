@@ -129,6 +129,16 @@ namespace MVCH.Controllers
             客戶資料 客戶資料 = this._CustomerRepo.Find(id);
             客戶資料.已刪除 = true;
 
+            foreach (var contact in 客戶資料.客戶聯絡人)
+            {
+                contact.已刪除 = true;
+            }
+
+            foreach (var bankInfo in 客戶資料.客戶銀行資訊)
+            {
+                bankInfo.已刪除 = true;
+            }
+
             this._CustomerRepo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
