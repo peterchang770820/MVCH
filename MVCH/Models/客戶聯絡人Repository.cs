@@ -17,7 +17,7 @@ namespace MVCH.Models
             return this.All().FirstOrDefault(c => c.Id == id);
         }
 
-        public IQueryable<客戶聯絡人> Search(string search)
+        public IQueryable<客戶聯絡人> Search(string search,string jobTitle)
         {
             var data = this.All();
 
@@ -25,9 +25,19 @@ namespace MVCH.Models
             {
                 data = data.Where(c => c.姓名.Contains(search));
             }
+
+            if (!string.IsNullOrEmpty(jobTitle))
+            {
+                data = data.Where(c => c.職稱 == jobTitle);
+            }
             data = data.Include(客 => 客.客戶資料);
 
             return data;
+        }
+
+        public IQueryable<客戶聯絡人> GetJobTitle()
+        {
+            return this.All().GroupBy(c => c.職稱).Select(c => c.FirstOrDefault());
         }
     }
 

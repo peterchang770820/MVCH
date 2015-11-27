@@ -22,13 +22,11 @@ namespace MVCH.Controllers
         }
 
         // GET: Contact
-        public ActionResult Index(string search)
+        public ActionResult Index(string search,string jobTitle)
         {
-            var data = this._ContactRepo.Search(search);
+            var data = this._ContactRepo.Search(search,jobTitle);
 
-            
-
-
+            ViewBag.JobTitle = new SelectList(this._ContactRepo.GetJobTitle(), "職稱", "職稱");
             return View(data);
         }
 
